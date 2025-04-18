@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Game
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center min-vh-100 align-items-center">
+            <div class="col-12 col-md-6">
+
+                <div {{ vue_component('WordLadder', {
+                    word: dailyWord.word.content,
+                    hint: dailyWord.word.hint,
+                    path: path('guess'),
+                    previousGuesses: previousGuessesArray
+                }) }}></div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

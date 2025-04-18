@@ -1,0 +1,31 @@
+@import "~bootstrap/scss/bootstrap";
+@import "bootstrap-icons";
+@import url('https://fonts.googleapis.com/css2?family=Boldonse&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Markazi+Text:wght@400..700&display=swap');
+
+body {
+  font-family: "Boldonse", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.rotate-3{
+transform: rotate(-3deg);
+
+
+/* Legacy vendor prefixes that you probably don't need... */
+
+/* Safari */
+-webkit-transform: rotate(-3deg);
+
+/* Firefox */
+-moz-transform: rotate(-3deg);
+
+/* IE */
+-ms-transform: rotate(-3deg);
+
+/* Opera */
+-o-transform: rotate(-3deg);
+
+/* Internet Explorer */
+filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=.3);
+}
