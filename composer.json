@@ -81,6 +81,12 @@
         "symfony/polyfill-php82": "*"
     },
     "scripts": {
+        "test": "vendor/bin/phpunit",
+        "fix-cs": "vendor/bin/ecs check --fix --ansi",
+        "check-cs": "vendor/bin/ecs check --ansi",
+        "phpstan": "php -d memory_limit=256M vendor/bin/phpstan analyze",
+        "rector-dry": "vendor/bin/rector p --dry-run --ansi",
+        "rector": "vendor/bin/rector p --ansi",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
@@ -103,12 +109,14 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
+        "rector/rector": "^2.0",
         "symfony/browser-kit": "7.2.*",
         "symfony/css-selector": "7.2.*",
         "symfony/debug-bundle": "7.2.*",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "7.2.*",
-        "symfony/web-profiler-bundle": "7.2.*"
+        "symfony/web-profiler-bundle": "7.2.*",
+        "symplify/easy-coding-standard": "*"
     }
 }

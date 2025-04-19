@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\GuestNameGenerator;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
-use App\Repository\UserRepository;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
@@ -27,10 +27,10 @@ class FingerprintAuthenticator extends AbstractAuthenticator implements Authenti
     use TargetPathTrait;
 
     public function __construct(
-        private UserRepository                 $userRepository,
+        private UserRepository $userRepository,
         private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly GuestNameGenerator    $guestNameGenerator,
-        private readonly Security              $security
+        private readonly GuestNameGenerator $guestNameGenerator,
+        private readonly Security $security
     )
     {
     }
@@ -51,13 +51,15 @@ class FingerprintAuthenticator extends AbstractAuthenticator implements Authenti
     {
         $fingerprint = $request->getSession()->get('fingerprint');
 
-        if (!$fingerprint) {
+        if (! $fingerprint) {
             throw new AuthenticationException('No fingerprint provided.');
         }
 
-        $user = $this->userRepository->findOneBy(['fingerprint' => $fingerprint]);
+        $user = $this->userRepository->findOneBy([
+            'fingerprint' => $fingerprint,
+        ]);
 
-        if (!$user) {
+        if ($user === null) {
             throw new UserNotFoundException('User not found for provided fingerprint.');
         }
 
@@ -82,9 +84,11 @@ class FingerprintAuthenticator extends AbstractAuthenticator implements Authenti
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         $fingerprint = $request->getSession()->get('fingerprint');
-        $user = $this->userRepository->findOneBy(['fingerprint' => $fingerprint]);
+        $user = $this->userRepository->findOneBy([
+            'fingerprint' => $fingerprint,
+        ]);
 
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             $user = new User(
                 name: $this->guestNameGenerator->generateFullName(),
                 fingerprint: $fingerprint

@@ -13,8 +13,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'use_savepoints' => true,
             'types' => [
                 'datetime_immutable' => \Carbon\Doctrine\DateTimeImmutableType::class,
-                'datetime' => \Carbon\Doctrine\DateTimeType::class
-            ]
+                'datetime' => \Carbon\Doctrine\DateTimeType::class,
+            ],
         ],
         'orm' => [
             'auto_generate_proxy_classes' => true,

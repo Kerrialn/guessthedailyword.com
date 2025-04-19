@@ -19,6 +19,4 @@ final readonly class PointsCalculatorService
 
         return (int) round(max(0, $points));
     }
-
-
 }

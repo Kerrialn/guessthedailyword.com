@@ -22,10 +22,6 @@ class Word
     #[ORM\Column(length: 255)]
     private ?string $hint = null;
 
-    /**
-     * @param string|null $content
-     * @param string|null $hint
-     */
     public function __construct(?string $content, ?string $hint)
     {
         $this->content = $content;

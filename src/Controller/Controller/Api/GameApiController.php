@@ -3,20 +3,22 @@
 namespace App\Controller\Controller\Api;
 
 use App\Entity\Guess;
+use App\Entity\User;
 use App\Repository\DailyWordRepository;
 use App\Repository\GuessRepository;
 use App\Service\GameHelperService;
 use App\Service\PointsCalculatorService;
 use Carbon\CarbonImmutable;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api')]
 class GameApiController extends AbstractController
 {
-
     public function __construct(
         private readonly DailyWordRepository     $dailyWordRepository,
         private readonly GameHelperService       $gameHelperService,
@@ -35,6 +37,12 @@ class GameApiController extends AbstractController
         $isCorrect = $this->gameHelperService->checkGuess(guessWord: $guess->content, dailyWord: $dailyWord->getWord()->getContent());
         $points = $this->pointsCalculatorService->calculatePoints(guessTime: CarbonImmutable::now(), dailyWordTime: $dailyWord->getCreatedAt(), maxPoints: 1000000);
 
+        if (!$currentUser instanceof User) {
+            return $this->json([
+                'message' => 'You need to be logged in.'
+            ], 401);
+        }
+
         $guess = new Guess(
             owner: $currentUser,
             dailyWord: $dailyWord,
@@ -43,8 +51,22 @@ class GameApiController extends AbstractController
             points: $isCorrect ? $points : null
         );
 
-        $this->guessRepository->save(entity: $guess, flush: true);
-        return $this->json(['isCorrect' => $guess->getIsCorrect()]);
-    }
+        try {
+            $this->guessRepository->save(entity: $guess, flush: true);
+        } catch (UniqueConstraintViolationException $exception) {
+            return $this->json([
+                'message' => 'You already guessed that!',
+            ], 403);
+        }
 
+        $feedback = $this->gameHelperService->generateLetterFeedback(
+            guess: $guess->getContent(),
+            actual: $dailyWord->getWord()->getContent()
+        );
+
+        return $this->json([
+            'isCorrect' => $guess->getIsCorrect(),
+            'feedback' => $feedback
+        ], 200);
+    }
 }

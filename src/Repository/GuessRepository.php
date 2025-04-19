@@ -10,7 +10,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Order;
 use Doctrine\Persistence\ManagerRegistry;
-use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<Guess>
@@ -21,6 +20,7 @@ class GuessRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Guess::class);
     }
+
     public function save(Guess $entity, bool $flush = false): void
     {
         $this->getEntityManager()
@@ -44,11 +44,9 @@ class GuessRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param DailyWord $dailyWord
-     * @param User $currentUser
      * @return array<int, Guess>
      */
-    public function findPreviousGuessesByDailyWord(DailyWord $dailyWord, User $currentUser) : array
+    public function findPreviousGuessesByDailyWord(DailyWord $dailyWord, User $currentUser): array
     {
         $qb = $this->createQueryBuilder('guess');
 
@@ -66,7 +64,7 @@ class GuessRepository extends ServiceEntityRepository
     /**
      * @return array<int, Guess>
      */
-    public function getCorrectGuesses(DailyWord $dailyWord) : array
+    public function getCorrectGuesses(DailyWord $dailyWord): array
     {
         $qb = $this->createQueryBuilder('guess');
 
@@ -82,5 +80,4 @@ class GuessRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
-
 }

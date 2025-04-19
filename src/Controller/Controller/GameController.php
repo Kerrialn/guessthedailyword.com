@@ -14,10 +14,9 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class GameController extends AbstractController
 {
-
     public function __construct(
         private readonly DailyWordRepository $dailyWordRepository,
-        private readonly GuessRepository     $guessRepository
+        private readonly GuessRepository $guessRepository
     )
     {
     }
@@ -28,24 +27,26 @@ class GameController extends AbstractController
         $dailyWord = $this->dailyWordRepository->getDailyWord();
 
         $canUserGuess = $this->isGranted(GameVoter::CAN_GUESS, $dailyWord);
-        if (!$canUserGuess) {
+        if (! $canUserGuess) {
             $userGuesses = $dailyWord->getGuesses()->filter(
-                fn(Guess $guess) => $guess->getOwner() === $currentUser
+                fn(Guess $guess): bool => $guess->getOwner() === $currentUser
             );
 
             $hasCorrectGuess = $userGuesses->findFirst(
-                fn(int $key, Guess $guess) => $guess->getIsCorrect()
+                fn(int $key, Guess $guess): bool => $guess->getIsCorrect()
             );
 
             if($hasCorrectGuess){
-                return $this->redirectToRoute('leaderboard', ['_fragment' => $currentUser->getId()]);
+                return $this->redirectToRoute('leaderboard', [
+                    '_fragment' => $currentUser->getId(),
+                ]);
             }
 
             return $this->redirectToRoute('game_over');
         }
 
         $previousGuesses = $this->guessRepository->findPreviousGuessesByDailyWord($dailyWord, $currentUser);
-        $previousGuessesArray = array_map(function($guess) {
+        $previousGuessesArray = array_map(function($guess): array {
             return [
                 'content' => $guess->getContent(),
                 'isCorrect' => $guess->getIsCorrect(),
@@ -54,14 +55,21 @@ class GameController extends AbstractController
 
         return $this->render('game/landing.html.twig', [
             'dailyWord' => $dailyWord,
-            'previousGuessesArray' => $previousGuessesArray
+            'previousGuessesArray' => $previousGuessesArray,
         ]);
     }
 
     #[Route(path: '/game-over', name: 'game_over')]
     public function over(): Response
     {
-        return $this->render('game/game-over.html.twig');
-    }
+        $dailyWord = $this->dailyWordRepository->getDailyWord();
+        $canUserGuess = $this->isGranted(GameVoter::CAN_GUESS, $dailyWord);
+        if($canUserGuess){
+            return $this->redirectToRoute('landing');
+        }
 
+        return $this->render('game/game-over.html.twig', [
+            'dailyWord' => $dailyWord
+        ]);
+    }
 }

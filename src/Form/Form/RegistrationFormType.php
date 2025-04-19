@@ -52,7 +52,7 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Password',
                 'attr' => [
                     'placeholder' => 'Password',
-                    'autocomplete' => 'new-password'
+                    'autocomplete' => 'new-password',
                 ],
                 'row_attr' => [
                     'class' => 'form-floating',

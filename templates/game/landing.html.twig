@@ -10,8 +10,8 @@
             <div class="col-12 col-md-6">
 
                 <div {{ vue_component('WordLadder', {
-                    word: dailyWord.word.content,
                     hint: dailyWord.word.hint,
+                    wordLength: dailyWord.word.content|length,
                     path: path('guess'),
                     previousGuesses: previousGuessesArray
                 }) }}></div>

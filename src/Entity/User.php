@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -70,6 +72,11 @@ class User implements UserInterface
         return $this->email;
     }
 
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
     public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
@@ -92,7 +99,7 @@ class User implements UserInterface
 
     public function eraseCredentials(): void
     {
-        // TODO: Implement eraseCredentials() method.
+
     }
 
     public function getUserIdentifier(): string
@@ -130,7 +137,6 @@ class User implements UserInterface
         $this->fingerprint = $fingerprint;
     }
 
-
     /**
      * @return Collection<int, Guess>
      */
@@ -141,7 +147,7 @@ class User implements UserInterface
 
     public function addGuess(Guess $guess): static
     {
-        if (!$this->guesses->contains($guess)) {
+        if (! $this->guesses->contains($guess)) {
             $this->guesses->add($guess);
         }
 
@@ -154,5 +160,4 @@ class User implements UserInterface
 
         return $this;
     }
-
 }

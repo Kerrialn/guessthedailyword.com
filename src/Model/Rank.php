@@ -8,7 +8,7 @@ final readonly class Rank
     public function __construct(
         private Uuid $id,
         private string $username,
-        private string $points,
+        private int $points,
         private string $time
     )
     {
@@ -24,7 +24,7 @@ final readonly class Rank
         return $this->username;
     }
 
-    public function getPoints(): string
+    public function getPoints(): int
     {
         return $this->points;
     }
@@ -33,5 +33,4 @@ final readonly class Rank
     {
         return $this->time;
     }
-
 }

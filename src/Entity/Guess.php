@@ -4,14 +4,17 @@ namespace App\Entity;
 
 use App\Repository\GuessRepository;
 use Carbon\CarbonImmutable;
-use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
-use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GuessRepository::class)]
+#[ORM\UniqueConstraint(
+    name: 'unique_guess_per_user_per_word',
+    columns: ['owner_id', 'daily_word_id', 'content']
+)]
 class Guess
 {
     #[ORM\Id]
@@ -31,17 +34,13 @@ class Guess
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private null|int $points;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isCorrect;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $createdAt;
 
-    /**
-     * @param User|null $owner
-     * @param DailyWord|null $dailyWord
-     * @param string|null $content
-     */
     public function __construct(
         ?User $owner,
         ?DailyWord $dailyWord,
@@ -57,7 +56,6 @@ class Guess
         $this->isCorrect = $isCorrect;
         $this->createdAt = CarbonImmutable::now();
     }
-
 
     public function getId(): Uuid
     {
@@ -123,5 +121,4 @@ class Guess
     {
         $this->points = $points;
     }
-
 }

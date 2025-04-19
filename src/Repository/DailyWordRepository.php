@@ -8,7 +8,6 @@ use App\Entity\DailyWord;
 use Carbon\CarbonImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<DailyWord>
@@ -47,14 +46,14 @@ class DailyWordRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('daily_word');
 
         $qb->andWhere(
-            $qb->expr()->between('daily_word.createdAt', ':todayStart', ':todayEnd')
+            $qb->expr()->between('daily_word.date', ':todayStart', ':todayEnd')
         )->setParameter('todayStart', CarbonImmutable::today('GMT')->startOfDay()->toDateTimeImmutable())
             ->setParameter('todayEnd', CarbonImmutable::today('GMT')->endOfDay()->toDateTimeImmutable());
 
         return $qb->getQuery()->getOneOrNullResult();
     }
 
-    public function findOneByWord(string $randomWord) : null|DailyWord
+    public function findOneByWord(string $randomWord): null|DailyWord
     {
         $qb = $this->createQueryBuilder('daily_word');
         $qb->leftJoin('daily_word.word', 'word');
@@ -66,5 +65,4 @@ class DailyWordRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getOneOrNullResult();
     }
-
 }

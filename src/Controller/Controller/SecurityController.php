@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Controller;
 
 use App\Entity\User;
-use App\Enum\FlashEnum;
-use App\Enum\RoleEnum;
 use App\Form\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use LogicException;
@@ -16,16 +14,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SecurityController extends AbstractController
 {
-
     public function __construct(
-        private readonly UserRepository              $userRepository,
-        private readonly TranslatorInterface         $translator,
+        private readonly UserRepository $userRepository,
+        private readonly TranslatorInterface $translator,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly Security $security
     )
@@ -35,7 +34,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getUser()) {
+        if ($this->getUser() instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             return $this->redirectToRoute('landing');
         }
 
@@ -44,17 +43,24 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->render('security/login.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error,
+        ]);
     }
 
-
     #[Route(path: '/complete-registration', name: 'complete_registration')]
-    public function finishRegistration(#[CurrentUser] User $currentUser, Request $request): Response
+    public function finishRegistration(#[CurrentUser] UserInterface $currentUser, Request $request): Response
     {
         $form = $this->createForm(RegistrationFormType::class, $currentUser);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if(!$currentUser instanceof PasswordAuthenticatedUserInterface && !$currentUser instanceof User){
+                return $this->redirectToRoute('app_login');
+            }
+
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
             $currentUser->setPassword($this->userPasswordHasher->hashPassword($currentUser, $plainPassword));
@@ -62,13 +68,13 @@ class SecurityController extends AbstractController
 
             $this->userRepository->save(entity: $currentUser, flush: true);
             $this->addFlash('message', $this->translator->trans('registration-complete'));
-            $this->security->login(user: $currentUser,authenticatorName: 'security.authenticator.form_login.main');
+            $this->security->login(user: $currentUser, authenticatorName: 'security.authenticator.form_login.main');
 
             return $this->redirectToRoute('landing');
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form
+            'registrationForm' => $form,
         ]);
     }
 

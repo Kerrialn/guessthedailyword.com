@@ -54,16 +54,16 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         'access_control' => [
             [
                 'path' => '/login',
-                'roles' => ['PUBLIC_ACCESS']
+                'roles' => ['PUBLIC_ACCESS'],
             ],
             [
                 'path' => '/register',
-                'roles' => ['PUBLIC_ACCESS']
+                'roles' => ['PUBLIC_ACCESS'],
             ],
             [
                 'path' => '/*',
-                'roles' => ['ROLE_GUEST']
-            ]
+                'roles' => ['ROLE_GUEST'],
+            ],
         ],
     ]);
     if ($containerConfigurator->env() === 'test') {

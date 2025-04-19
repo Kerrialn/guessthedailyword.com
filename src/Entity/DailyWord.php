@@ -3,15 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\DailyWordRepository;
-use App\Repository\UserRepository;
 use Carbon\CarbonImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
-use Doctrine\ORM\Mapping as ORM;
-
 
 #[ORM\Entity(repositoryClass: DailyWordRepository::class)]
 class DailyWord
@@ -30,6 +28,9 @@ class DailyWord
      */
     #[ORM\OneToMany(targetEntity: Guess::class, mappedBy: 'dailyWord')]
     private Collection $guesses;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, unique: true)]
+    private CarbonImmutable $date;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private CarbonImmutable $createdAt;
@@ -65,7 +66,7 @@ class DailyWord
 
     public function addGuess(Guess $guess): static
     {
-        if (!$this->guesses->contains($guess)) {
+        if (! $this->guesses->contains($guess)) {
             $this->guesses->add($guess);
         }
 
@@ -87,5 +88,15 @@ class DailyWord
     public function setCreatedAt(CarbonImmutable $createdAt): void
     {
         $this->createdAt = CarbonImmutable::parse($createdAt);
+    }
+
+    public function getDate(): CarbonImmutable
+    {
+        return $this->date;
+    }
+
+    public function setDate(CarbonImmutable $date): void
+    {
+        $this->date = $date;
     }
 }

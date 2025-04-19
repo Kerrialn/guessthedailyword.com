@@ -2,8 +2,6 @@
 
 namespace App\Controller\Controller;
 
-use App\Entity\DailyWord;
-use App\Entity\User;
 use App\Model\Rank;
 use App\Repository\DailyWordRepository;
 use App\Repository\GuessRepository;
@@ -11,15 +9,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class LeaderBoardController extends AbstractController
 {
-
-
     public function __construct(
-        private readonly DailyWordRepository     $dailyWordRepository,
-        private readonly GuessRepository         $guessRepository
+        private readonly DailyWordRepository $dailyWordRepository,
+        private readonly GuessRepository $guessRepository
     )
     {
     }
@@ -31,7 +26,7 @@ class LeaderBoardController extends AbstractController
         $correctGuesses = $this->guessRepository->getCorrectGuesses($dailyWord);
 
         $ranking = new ArrayCollection();
-        foreach ($correctGuesses as $index => $guess) {
+        foreach ($correctGuesses as $guess) {
             $rank = new Rank(
                 id: $guess->getOwner()->getId(),
                 username: $guess->getOwner()->getName(),
@@ -43,8 +38,7 @@ class LeaderBoardController extends AbstractController
 
         return $this->render('game/leaderboard.html.twig', [
             'dailyWord' => $dailyWord,
-            'ranking' => $ranking
+            'ranking' => $ranking,
         ]);
     }
-
 }
