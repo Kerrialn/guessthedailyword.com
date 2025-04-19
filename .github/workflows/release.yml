@@ -116,7 +116,6 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-          script_stop: true
           script: |
             cd /guessthedailyword.com
             docker-compose pull
