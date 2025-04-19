@@ -32,3 +32,4 @@ yarn-error.log
 phpstan.neon
 ###< phpstan/phpstan ###
 .env*
+/docker
