@@ -69,7 +69,7 @@ class GameController extends AbstractController
         }
 
         return $this->render('game/game-over.html.twig', [
-            'dailyWord' => $dailyWord
+            'dailyWord' => $dailyWord,
         ]);
     }
 }

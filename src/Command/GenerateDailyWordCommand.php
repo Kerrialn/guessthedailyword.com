@@ -45,14 +45,16 @@ class GenerateDailyWordCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $days      = (int) $input->getArgument('days');
+        $days = (int) $input->getArgument('days');
         $minLength = (int) $input->getOption('min-length');
         $maxLength = (int) $input->getOption('max-length');
-        $today     = CarbonImmutable::today();
+        $today = CarbonImmutable::today();
 
         for ($i = 0; $i < $days; $i++) {
             $date = $today->addDays($i);
-            if ($this->dailyWordRepository->findOneBy(['createdAt' => $date])) {
+            if ($this->dailyWordRepository->findOneBy([
+                'createdAt' => $date,
+            ]) !== null) {
                 $output->writeln(
                     sprintf('<comment>Daily word already set for %s, skipping.</comment>', $date->format('Y-m-d'))
                 );
@@ -62,20 +64,22 @@ class GenerateDailyWordCommand extends Command
             // Use OpenAI to generate both the word and the hint
             [$word, $hint] = $this->generateWordAndHint($minLength, $maxLength);
 
-            if (!$word) {
+            if (! $word) {
                 $output->writeln(
                     sprintf('<error>Failed to generate word for %s</error>', $date->format('Y-m-d'))
                 );
                 continue;
             }
 
-            $wordExists = $this->wordRepository->findOneBy(['content' => strtolower($word)]);
-            if($wordExists){
+            $wordExists = $this->wordRepository->findOneBy([
+                'content' => strtolower($word),
+            ]);
+            if($wordExists !== null){
                 [$word, $hint] = $this->generateWordAndHint($minLength, $maxLength);
             }
 
             $wordEntity = new Word(content: strtolower($word), hint: $hint);
-            $dailyWord  = new DailyWord();
+            $dailyWord = new DailyWord();
             $dailyWord->setWord($wordEntity);
             $dailyWord->setDate($date);
 
@@ -93,6 +97,14 @@ class GenerateDailyWordCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @return string[]|null[]
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
     private function generateWordAndHint(int $minLength, int $maxLength): array
     {
         $prompt = sprintf(
@@ -102,10 +114,16 @@ class GenerateDailyWordCommand extends Command
         );
 
         $payload = [
-            'model'    => 'gpt-3.5-turbo',
+            'model' => 'gpt-3.5-turbo',
             'messages' => [
-                ['role' => 'system', 'content' => 'You are a creative puzzle master who makes challenging word-guessing clues.'],
-                ['role' => 'user',   'content' => $prompt]
+                [
+                    'role' => 'system',
+                    'content' => 'You are a creative puzzle master who makes challenging word-guessing clues.',
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $prompt,
+                ],
             ],
             'max_tokens' => 80,
         ];
@@ -113,7 +131,7 @@ class GenerateDailyWordCommand extends Command
         $resp = $this->httpClient->request('POST', self::OPENAI_URL, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->parameterBag->get('open-ai-key'),
-                'Content-Type'  => 'application/json',
+                'Content-Type' => 'application/json',
             ],
             'json' => $payload,
         ]);

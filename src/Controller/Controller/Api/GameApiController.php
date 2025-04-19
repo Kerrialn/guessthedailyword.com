@@ -13,16 +13,15 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api')]
 class GameApiController extends AbstractController
 {
     public function __construct(
-        private readonly DailyWordRepository     $dailyWordRepository,
-        private readonly GameHelperService       $gameHelperService,
-        private readonly GuessRepository         $guessRepository,
+        private readonly DailyWordRepository $dailyWordRepository,
+        private readonly GameHelperService $gameHelperService,
+        private readonly GuessRepository $guessRepository,
         private readonly PointsCalculatorService $pointsCalculatorService
     )
     {
@@ -37,9 +36,9 @@ class GameApiController extends AbstractController
         $isCorrect = $this->gameHelperService->checkGuess(guessWord: $guess->content, dailyWord: $dailyWord->getWord()->getContent());
         $points = $this->pointsCalculatorService->calculatePoints(guessTime: CarbonImmutable::now(), dailyWordTime: $dailyWord->getCreatedAt(), maxPoints: 1000000);
 
-        if (!$currentUser instanceof User) {
+        if (! $currentUser instanceof User) {
             return $this->json([
-                'message' => 'You need to be logged in.'
+                'message' => 'You need to be logged in.',
             ], 401);
         }
 
@@ -66,7 +65,7 @@ class GameApiController extends AbstractController
 
         return $this->json([
             'isCorrect' => $guess->getIsCorrect(),
-            'feedback' => $feedback
+            'feedback' => $feedback,
         ], 200);
     }
 }

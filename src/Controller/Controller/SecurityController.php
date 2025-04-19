@@ -57,7 +57,7 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if(!$currentUser instanceof PasswordAuthenticatedUserInterface && !$currentUser instanceof User){
+            if(! $currentUser instanceof PasswordAuthenticatedUserInterface && ! $currentUser instanceof User){
                 return $this->redirectToRoute('app_login');
             }
 

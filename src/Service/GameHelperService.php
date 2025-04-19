@@ -10,23 +10,21 @@ final readonly class GameHelperService
     }
 
     /**
-     * @param string $guess
-     * @param string $actual
      * @return string[]
      */
     public function generateLetterFeedback(string $guess, string $actual): array
     {
-        $guess  = strtoupper($guess);
+        $guess = strtoupper($guess);
         $actual = strtoupper($actual);
 
         $result = array_fill(0, strlen($actual), 'absent');
-        $used   = array_fill(0, strlen($actual), false);
+        $used = array_fill(0, strlen($actual), false);
 
         // First pass: mark correct letters (green)
         for ($i = 0; $i < strlen($guess); $i++) {
             if ($guess[$i] === $actual[$i]) {
                 $result[$i] = 'correct';
-                $used[$i]   = true;
+                $used[$i] = true;
             }
         }
 
@@ -34,9 +32,9 @@ final readonly class GameHelperService
         for ($i = 0; $i < strlen($guess); $i++) {
             if ($result[$i] !== 'correct') {
                 for ($j = 0; $j < strlen($actual); $j++) {
-                    if (!$used[$j] && $guess[$i] === $actual[$j]) {
+                    if (! $used[$j] && $guess[$i] === $actual[$j]) {
                         $result[$i] = 'present';
-                        $used[$j]   = true;
+                        $used[$j] = true;
                         break;
                     }
                 }
@@ -45,5 +43,4 @@ final readonly class GameHelperService
 
         return $result;
     }
-
 }
