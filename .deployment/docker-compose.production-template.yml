@@ -3,7 +3,7 @@ services:
     image: ghcr.io/eventpoints/guessthedailyword.com-php:main
     volumes:
       - php_socket:/var/run/php
-      - ./deployment/php.ini:/usr/local/etc/php/php.ini
+      - ./php/php.ini:/usr/local/etc/php/php.ini
     healthcheck:
       interval: 10s
       timeout: 3s
@@ -13,17 +13,14 @@ services:
     restart: unless-stopped
     environment:
       APP_ENV: "prod"
-      MERCURE_URL: "https://guessthedailyword.com/.well-known/mercure"
       MERCURE_PUBLIC_URL: "https://guessthedailyword.com/.well-known/mercure"
-      DATABASE_URL: "postgresql://__TALKENGLISH_POSTGRES_USER__:__TALKENGLISH_POSTGRES_PASSWORD__@database:5432/__TALKENGLISH_POSTGRES_DBNAME__?serverVersion=17&charset=utf8"
-      MERCURE_JWT_SECRET: "__TALKENGLISH_MERCURE_JWT_SECRET__"
-      APP_SECRET: "__TALKENGLISH_APP_SECRET__"
-      MAILER_DSN: "__TALKENGLISH_MAILER_DSN__"
-      MESSENGER_TRANSPORT_DSN: "__TALKENGLISH_MESSENGER_TRANSPORT_DSN__"
-      APP_TIMEZONE: "__TALKENGLISH_APP_TIMEZONE__"
-      STRIPE_PUBLIC_KEY: "__TALKENGLISH_STRIPE_PUBLIC_KEY__"
-      STRIPE_PRIVATE_KEY: "__TALKENGLISH_STRIPE_PRIVATE_KEY__"
-      OPENAI_API_KEY: "__TALKENGLISH_OPENAI_API_KEY__"
+      DATABASE_URL: "postgresql://__GUESS_THE_DAILY_POSTGRES_USER__:__GUESS_THE_DAILY_POSTGRES_PASSWORD__@database:5432/__GUESS_THE_DAILY_POSTGRES_DBNAME__?serverVersion=17&charset=utf8"
+      MERCURE_JWT_SECRET: "__GUESS_THE_DAILY_WORD__MERCURE_JWT_SECRET__"
+      APP_SECRET: "__GUESS_THE_DAILY_APP_SECRET__"
+      MAILER_DSN: "__GUESS_THE_DAILY_MAILER_DSN__"
+      MESSENGER_TRANSPORT_DSN: "__GUESS_THE_DAILY_MESSENGER_TRANSPORT_DSN__"
+      APP_TIMEZONE: "__GUESS_THE_DAILY_APP_TIMEZONE__"
+      CORS_ALLOW_ORIGIN: "__GUESS_THE_DAILY_CORS_ALLOW_ORIGIN__"
     networks:
       - internal
 
@@ -34,8 +31,8 @@ services:
     restart: unless-stopped
     environment:
       SERVER_NAME: ":80"
-      MERCURE_PUBLISHER_JWT_KEY: "__TALKENGLISH_MERCURE_JWT_SECRET__"
-      MERCURE_SUBSCRIBER_JWT_KEY: "__TALKENGLISH_MERCURE_JWT_SECRET__"
+      MERCURE_PUBLISHER_JWT_KEY: "__GUESS_THE_DAILY_MERCURE_JWT_SECRET__"
+      MERCURE_SUBSCRIBER_JWT_KEY: "__GUESS_THE_DAILY_MERCURE_JWT_SECRET__"
     volumes:
       - php_socket:/var/run/php
       - caddy_data:/data
@@ -45,9 +42,9 @@ services:
       - "80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.talkenglish.rule=Host(`guessthedailyword.com`, `www.guessthedailyword.com`)"
-      - "traefik.http.routers.talkenglish.tls=true"
-      - "traefik.http.routers.talkenglish.tls.certresolver=le"
+      - "traefik.http.routers.guessthedailyword.rule=Host(`guessthedailyword.com`, `www.guessthedailyword.com`)"
+      - "traefik.http.routers.guessthedailyword.tls=true"
+      - "traefik.http.routers.guessthedailyword.tls.certresolver=le"
     networks:
       - traefik
       - internal
@@ -56,9 +53,9 @@ services:
     image: postgres:17
     restart: unless-stopped
     environment:
-      POSTGRES_DB: "__TALKENGLISH_POSTGRES_DBNAME__"
-      POSTGRES_PASSWORD: "__TALKENGLISH_POSTGRES_PASSWORD__"
-      POSTGRES_USER: "__TALKENGLISH_POSTGRES_USER__"
+      POSTGRES_DB: "__GUESS_THE_DAILY_POSTGRES_DBNAME__"
+      POSTGRES_PASSWORD: "__GUESS_THE_DAILY_POSTGRES_PASSWORD__"
+      POSTGRES_USER: "__GUESS_THE_DAILY_POSTGRES_USER__"
     volumes:
       - ./db-data:/var/lib/postgresql/data:rw
     networks:
@@ -73,9 +70,9 @@ services:
       - "8080"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.talkenglish-adminer.rule=Host(`adminer.guessthedailyword.com`)"
-      - "traefik.http.routers.talkenglish-adminer.tls=true"
-      - "traefik.http.routers.talkenglish-adminer.tls.certresolver=le"
+      - "traefik.http.routers.guessthedailyword-adminer.rule=Host(`adminer.guessthedailyword.com`)"
+      - "traefik.http.routers.guessthedailyword-adminer.tls=true"
+      - "traefik.http.routers.guessthedailyword-adminer.tls.certresolver=le"
     networks:
       - internal
       - traefik

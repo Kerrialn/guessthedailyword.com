@@ -8,14 +8,14 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: postgresql://root:talkenglish@127.0.0.1:5432/talkenglish?serverVersion=13&charset=utf8
+      DATABASE_URL: postgresql://root:guessthedailyword@127.0.0.1:5432/guessthedailyword?serverVersion=13&charset=utf8
 
     services:
       db:
         image: postgres:13
         env:
           POSTGRES_USER: root
-          POSTGRES_PASSWORD: talkenglish
+          POSTGRES_PASSWORD: guessthedailyword
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         ports:
           - 5432:5432
@@ -29,6 +29,8 @@ jobs:
             extensions: mbstring, uuid # needed by phpunit
 
       -   run: composer install --dev --no-progress
+      -   run: yarn install
+      -   run: yarn run dev
       -   run: vendor/bin/phpunit
 
   ecs:
