@@ -14,7 +14,7 @@ class LeaderBoardController extends AbstractController
 {
     public function __construct(
         private readonly DailyWordRepository $dailyWordRepository,
-        private readonly GuessRepository     $guessRepository
+        private readonly GuessRepository $guessRepository
     )
     {
     }
