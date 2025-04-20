@@ -26,12 +26,13 @@ class GenerateDailyWordCommand extends Command
     private const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 
     public function __construct(
-        private DailyWordRepository $dailyWordRepository,
-        private WordRepository $wordRepository,
+        private DailyWordRepository    $dailyWordRepository,
+        private WordRepository         $wordRepository,
         private EntityManagerInterface $em,
-        private HttpClientInterface $httpClient,
-        private ParameterBagInterface $parameterBag,
-    ) {
+        private HttpClientInterface    $httpClient,
+        private ParameterBagInterface  $parameterBag,
+    )
+    {
         parent::__construct();
     }
 
@@ -45,16 +46,16 @@ class GenerateDailyWordCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $days = (int) $input->getArgument('days');
-        $minLength = (int) $input->getOption('min-length');
-        $maxLength = (int) $input->getOption('max-length');
-        $today = CarbonImmutable::today();
+        $days = (int)$input->getArgument('days');
+        $minLength = (int)$input->getOption('min-length');
+        $maxLength = (int)$input->getOption('max-length');
+        $today = CarbonImmutable::today()->setTimezone('GMT')->setTime(hour: 07, minute: 0);
 
         for ($i = 0; $i < $days; $i++) {
             $date = $today->addDays($i);
-            if ($this->dailyWordRepository->findOneBy([
-                'createdAt' => $date,
-            ]) !== null) {
+            $dailyWord = $this->dailyWordRepository->findByDate($date);
+
+            if ($dailyWord instanceof DailyWord) {
                 $output->writeln(
                     sprintf('<comment>Daily word already set for %s, skipping.</comment>', $date->format('Y-m-d'))
                 );
@@ -64,7 +65,7 @@ class GenerateDailyWordCommand extends Command
             // Use OpenAI to generate both the word and the hint
             [$word, $hint] = $this->generateWordAndHint($minLength, $maxLength);
 
-            if (! $word) {
+            if (!$word) {
                 $output->writeln(
                     sprintf('<error>Failed to generate word for %s</error>', $date->format('Y-m-d'))
                 );
@@ -74,7 +75,7 @@ class GenerateDailyWordCommand extends Command
             $wordExists = $this->wordRepository->findOneBy([
                 'content' => strtolower($word),
             ]);
-            if($wordExists !== null){
+            if ($wordExists !== null) {
                 [$word, $hint] = $this->generateWordAndHint($minLength, $maxLength);
             }
 
@@ -87,7 +88,7 @@ class GenerateDailyWordCommand extends Command
             $this->em->persist($dailyWord);
 
             $output->writeln(
-                sprintf('<info>Scheduled "%s" on %s</info>', $word, $date->format('Y-m-d'))
+                "Scheduled word for {$date->format('Y-m-d')}"
             );
         }
 

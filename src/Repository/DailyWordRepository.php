@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\DailyWord;
 use Carbon\CarbonImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -52,6 +53,19 @@ class DailyWordRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+    public function findByDate(CarbonImmutable $date): ?DailyWord
+    {
+        $qb = $this->createQueryBuilder('daily_word');
+
+        $qb->andWhere(
+            $qb->expr()->eq('daily_word.date', ':date')
+        )->setParameter('date', $date->toDate());
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+
 
     public function findOneByWord(string $randomWord): null|DailyWord
     {
