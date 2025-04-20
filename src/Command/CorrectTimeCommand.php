@@ -2,20 +2,11 @@
 
 namespace App\Command;
 
-use App\Entity\DailyWord;
-use App\Entity\Word;
 use App\Repository\DailyWordRepository;
-use App\Repository\WordRepository;
-use Carbon\CarbonImmutable;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsCommand(
     name: 'fix-daily-words-time',
@@ -23,7 +14,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class CorrectTimeCommand extends Command
 {
-
     public function __construct(
         private DailyWordRepository $dailyWordRepository,
     )
@@ -43,5 +33,4 @@ class CorrectTimeCommand extends Command
 
         return Command::SUCCESS;
     }
-
 }
