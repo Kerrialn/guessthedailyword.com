@@ -1,5 +1,5 @@
 <template>
-  <Avatar :name="kerrial-newham" variant="beam" :size="size" />
+  <Avatar :name="name" variant="beam" :size="size" />
 </template>
 
 <script>
