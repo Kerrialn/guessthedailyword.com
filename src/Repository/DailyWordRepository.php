@@ -41,14 +41,14 @@ class DailyWordRepository extends ServiceEntityRepository
         }
     }
 
-    public function getDailyWord(): null|DailyWord
+    public function getDailyWord(): ?DailyWord
     {
         $qb = $this->createQueryBuilder('daily_word');
 
         $qb->andWhere(
             $qb->expr()->between('daily_word.date', ':todayStart', ':todayEnd')
-        )->setParameter('todayStart', CarbonImmutable::today('GMT')->startOfDay()->toDateTimeImmutable())
-            ->setParameter('todayEnd', CarbonImmutable::today('GMT')->endOfDay()->toDateTimeImmutable());
+        )->setParameter('todayStart', CarbonImmutable::today()->setTime(7, 0, 0)->toDateTimeImmutable())
+            ->setParameter('todayEnd', CarbonImmutable::today()->addDay()->setTime(6, 59, 59)->toDateTimeImmutable());
 
         return $qb->getQuery()->getOneOrNullResult();
     }
