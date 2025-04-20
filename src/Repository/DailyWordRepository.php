@@ -47,8 +47,8 @@ class DailyWordRepository extends ServiceEntityRepository
 
         $qb->andWhere(
             $qb->expr()->between('daily_word.date', ':todayStart', ':todayEnd')
-        )->setParameter('todayStart', CarbonImmutable::today('GMT')->setTime(hour: 7, minute: 0)->toDateTimeImmutable())
-            ->setParameter('todayEnd', CarbonImmutable::tomorrow('GMT')->setTime(hour: 7, minute: 0)->toDateTimeImmutable());
+        )->setParameter('todayStart', CarbonImmutable::today('GMT')->startOfDay()->toDateTimeImmutable())
+            ->setParameter('todayEnd', CarbonImmutable::today('GMT')->endOfDay()->toDateTimeImmutable());
 
         return $qb->getQuery()->getOneOrNullResult();
     }
