@@ -19,14 +19,16 @@
             </div>
             <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item text-center mb-3">
+                        <div class="my-3 fs-3">
+                            {{ app.user.name|title }}
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('landing') }}">Daily Game</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('leaderboard') }}">Leaderboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">{{ app.user.name|title }}</a>
                     </li>
                 </ul>
             </div>

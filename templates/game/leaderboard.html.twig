@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center min-vh-100 align-items-center">
         <div class="row justify-content-center min-vh-100 align-items-center">
-            <div class="col-12 col-md-8 text-center">
+            <div class="col-12 col-md-9 text-center">
 
                 <div class="list-group list-group-flush" data-bs-spy="scroll" data-bs-smooth-scroll="true"
                      class="scrollspy-leaderboard" tabindex="0">
@@ -14,9 +14,13 @@
                     </div>
                     {% for rank in ranking %}
                         <div id="{{ app.user.id }}"
-                             class="list-group-item list-group-item-action {{ app.user.id == rank.id ? 'text-bg-success' }}">
+                             class="list-group-item list-group-item-action ">
                             <div class="fs-3 d-flex justify-content-between align-items-center">
                                 <div>{{ loop.index }}.</div>
+                                <div {{ vue_component('Identicon', {
+                                    name: rank.username,
+                                    size: 60
+                                }) }}></div>
                                 <div>{{ rank.username|title }} {{ rank.username == app.user.name ? "(You)" }} - {{ rank.time }}</div>
                                 <span class="badge text-bg-dark rounded-pill">{{ rank.points|format_number }}</span>
                             </div>
