@@ -1,7 +1,5 @@
 <template>
   <div>
-
-
     <div v-if="error" class="alert text-center alert-danger" role="alert">
       {{ message }}
     </div>
@@ -24,11 +22,13 @@
       <span class="badge rounded-pill text-bg-dark">{{ 3 - submittedGuesses.length }} left</span>
     </div>
 
-    <div class="h5 mb-5 text-center">
-      {{ hint }}
+    <div class=" mb-5 text-center">
+      <div class="fs-4">{{ hint }}</div>
+      <hr class="my-2"/>
+      <div class="text-muted" >{{ wordLength }} letters</div>
     </div>
 
-    <div class="d-flex gap-3 justify-content-center">
+    <div class="d-flex gap-md-3 gap-0 justify-content-center">
       <input
           v-for="(char, idx) in letters"
           :key="idx"

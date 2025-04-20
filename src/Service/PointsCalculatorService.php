@@ -9,14 +9,13 @@ final readonly class PointsCalculatorService
     public function calculatePoints(
         CarbonImmutable $guessTime,
         CarbonImmutable $dailyWordTime,
-        int $maxPoints = 100,
-        int $maxTime = 600
+        int $maxPoints = 100
     ): int
     {
-        $diff = $guessTime->getTimestamp() - $dailyWordTime->getTimestamp();
-        $t = max(0, min($diff, $maxTime));
-        $points = $maxPoints * (1 - log($t + 1) / log($maxTime + 1));
-
-        return (int) round(max(0, $points));
+        $maxTime = 86399;
+        $diff = abs($guessTime->getTimestamp() - $dailyWordTime->getTimestamp()); // Absolute difference in time
+        $points = $maxPoints * pow(1 - $diff / $maxTime, 2);
+        return (int) round(max(1, $points));
     }
+
 }
