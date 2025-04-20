@@ -26,11 +26,11 @@ class GenerateDailyWordCommand extends Command
     private const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 
     public function __construct(
-        private DailyWordRepository    $dailyWordRepository,
-        private WordRepository         $wordRepository,
+        private DailyWordRepository $dailyWordRepository,
+        private WordRepository $wordRepository,
         private EntityManagerInterface $em,
-        private HttpClientInterface    $httpClient,
-        private ParameterBagInterface  $parameterBag,
+        private HttpClientInterface $httpClient,
+        private ParameterBagInterface $parameterBag,
     )
     {
         parent::__construct();
@@ -46,9 +46,9 @@ class GenerateDailyWordCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $days = (int)$input->getArgument('days');
-        $minLength = (int)$input->getOption('min-length');
-        $maxLength = (int)$input->getOption('max-length');
+        $days = (int) $input->getArgument('days');
+        $minLength = (int) $input->getOption('min-length');
+        $maxLength = (int) $input->getOption('max-length');
         $today = CarbonImmutable::today()->setTimezone('GMT')->setTime(hour: 07, minute: 0);
 
         for ($i = 0; $i < $days; $i++) {
@@ -65,7 +65,7 @@ class GenerateDailyWordCommand extends Command
             // Use OpenAI to generate both the word and the hint
             [$word, $hint] = $this->generateWordAndHint($minLength, $maxLength);
 
-            if (!$word) {
+            if (! $word) {
                 $output->writeln(
                     sprintf('<error>Failed to generate word for %s</error>', $date->format('Y-m-d'))
                 );
