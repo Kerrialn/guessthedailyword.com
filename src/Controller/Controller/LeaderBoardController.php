@@ -14,7 +14,7 @@ class LeaderBoardController extends AbstractController
 {
     public function __construct(
         private readonly DailyWordRepository $dailyWordRepository,
-        private readonly GuessRepository $guessRepository
+        private readonly GuessRepository     $guessRepository
     )
     {
     }
@@ -31,7 +31,7 @@ class LeaderBoardController extends AbstractController
                 id: $guess->getOwner()->getId(),
                 username: $guess->getOwner()->getName(),
                 points: $guess->getPoints(),
-                time: $guess->getCreatedAt()->diffAsCarbonInterval($guess->getDailyWord()->getCreatedAt())->forHumans(short: true)
+                time: $guess->getCreatedAt()->diffAsCarbonInterval($guess->getDailyWord()->getDate())->forHumans(short: true)
             );
             $ranking->add($rank);
         }
