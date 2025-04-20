@@ -15,7 +15,7 @@
                     {% for rank in ranking %}
                         <div id="{{ app.user.id }}"
                              class="list-group-item list-group-item-action ">
-                            <div class="d-flex justify-content-between gap-3 gap-md-3 align-items-center">
+                            <div class="d-flex justify-content-around gap-3 gap-md-3 align-items-center">
                                 <div class="fs-3">{{ loop.index }}.</div>
                                 <div {{ vue_component('Identicon', {
                                     name: rank.username,
