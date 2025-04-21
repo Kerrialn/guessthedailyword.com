@@ -31,7 +31,7 @@ class LeaderBoardController extends AbstractController
                 id: $guess->getOwner()->getId(),
                 username: $guess->getOwner()->getName(),
                 points: $guess->getPoints(),
-                time: $guess->getCreatedAt()->diffAsCarbonInterval($guess->getDailyWord()->getDate())->forHumans(short: true)
+                time: $guess->getDailyWord()->getDate()->diffAsCarbonInterval($guess->getCreatedAt())->forHumans(short: true)
             );
             $ranking->add($rank);
         }
