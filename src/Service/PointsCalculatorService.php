@@ -13,7 +13,7 @@ final readonly class PointsCalculatorService
     ): int
     {
         $maxTime = 86399;
-        $diff = abs($guessTime->getTimestamp() - $dailyWordTime->getTimestamp()); // Absolute difference in time
+        $diff = abs($guessTime->getTimestamp() - $dailyWordTime->getTimestamp());
         $points = $maxPoints * pow(1 - $diff / $maxTime, 2);
         return (int) round(max(1, $points));
     }

@@ -34,7 +34,7 @@ class GameApiController extends AbstractController
         $currentUser = $this->getUser();
         $dailyWord = $this->dailyWordRepository->getDailyWord();
         $isCorrect = $this->gameHelperService->checkGuess(guessWord: $guess->content, dailyWord: $dailyWord->getWord()->getContent());
-        $points = $this->pointsCalculatorService->calculatePoints(guessTime: CarbonImmutable::now(), dailyWordTime: $dailyWord->getCreatedAt(), maxPoints: 1000000);
+        $points = $this->pointsCalculatorService->calculatePoints(guessTime: CarbonImmutable::now(), dailyWordTime: $dailyWord->getDate(), maxPoints: 1000000);
 
         if (! $currentUser instanceof User) {
             return $this->json([
