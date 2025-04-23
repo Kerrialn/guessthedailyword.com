@@ -10,7 +10,7 @@
                      class="scrollspy-leaderboard" tabindex="0">
                     <div class="list-group-item">
                         <h1 class="mb-3">Leaderboard</h1>
-                        <div class="mb-3">{{ dailyWord.createdAt.toDate|format_date(dateFormat='long') }}</div>
+                        <div class="mb-3">{{ dailyWord.date.toDate|format_date(dateFormat='long') }}</div>
                     </div>
                     {% for rank in ranking %}
                         <div id="{{ app.user.id }}"
