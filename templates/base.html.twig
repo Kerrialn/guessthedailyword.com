@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Guess The Daily Word{% endblock %}</title>
+    {{ include('partial/_meta-tags.html.twig') }}
+
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
     {% endblock %}

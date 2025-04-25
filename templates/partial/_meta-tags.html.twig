@@ -1,0 +1,34 @@
+{% block metatags %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {# SEO: title & description #}
+    <title>{{ meta.title|default('Guess the Daily Word') }}</title>
+    <meta name="description"
+          content="{{ meta.description|default('Put your linguistic skills to the test with a new word conundrum every day.') }}">
+
+    {# Open Graph #}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Guess the Daily Word">
+    <meta property="og:title" content="{{ meta.title|default('Guess the Daily Word') }}">
+    <meta property="og:description"
+          content="{{ meta.description|default('Put your linguistic skills to the test with a new word conundrum every day.') }}">
+    <meta property="og:url" content="{{ meta.url|default(app.request.uri) }}">
+    <meta property="og:image" content="{{ meta.image|default(asset('images/default-social.png')) }}">
+
+    {# Twitter Card #}
+    <meta name="twitter:title" content="{{ meta.title|default('Guess the Daily Word') }}">
+    <meta name="twitter:description"
+          content="{{ meta.description|default('Put your linguistic skills to the test with a new word conundrum every day.') }}">
+    <meta name="twitter:image" content="{{ meta.image|default(asset('images/default-social.png')) }}">
+
+    {# JSON-LD Structured Data #}
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Guess the Daily Word",
+            "url": "https://guessthedailyword.com",
+            "description": "Put your linguistic skills to the test with a new word conundrum every day."
+        }
+    </script>
+{% endblock %}
