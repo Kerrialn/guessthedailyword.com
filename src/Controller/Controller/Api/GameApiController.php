@@ -30,11 +30,12 @@ class GameApiController extends AbstractController
     #[Route(path: '/guess', name: 'guess')]
     public function create(Request $request): JsonResponse
     {
+        $time = CarbonImmutable::now()->setTimezone('GMT');
         $guess = json_decode($request->getContent());
         $currentUser = $this->getUser();
         $dailyWord = $this->dailyWordRepository->getDailyWord();
         $isCorrect = $this->gameHelperService->checkGuess(guessWord: $guess->content, dailyWord: $dailyWord->getWord()->getContent());
-        $points = $this->pointsCalculatorService->calculatePoints(guessTime: CarbonImmutable::now(), dailyWordTime: $dailyWord->getDate(), maxPoints: 1000000);
+        $points = $this->pointsCalculatorService->calculatePoints(guessTime: $time, dailyWordTime: $dailyWord->getDate(), maxPoints: 1000000);
 
         if (! $currentUser instanceof User) {
             return $this->json([

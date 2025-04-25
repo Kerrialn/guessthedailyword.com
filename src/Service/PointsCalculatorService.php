@@ -17,4 +17,5 @@ final readonly class PointsCalculatorService
         $points = $maxPoints * pow(1 - $diff / $maxTime, 2);
         return (int) round(max(1, $points));
     }
+
 }

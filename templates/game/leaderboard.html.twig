@@ -12,20 +12,22 @@
                         <h1 class="mb-3">Leaderboard</h1>
                         <div class="mb-3">{{ dailyWord.date.toDate|format_date(dateFormat='long') }}</div>
                     </div>
+
                     {% for rank in ranking %}
                         <div id="{{ app.user.id }}"
                              class="list-group-item list-group-item-action ">
-                            <div class="d-flex justify-content-around gap-3 gap-md-3 align-items-center">
-                                <div class="fs-3">{{ loop.index }}.</div>
-                                <div {{ vue_component('Identicon', {
-                                    name: rank.username,
-                                    size: 60
-                                }) }}></div>
-                                <div class="text-start">
-                                    <div class="fs-5">{{ rank.username|title }} {{ rank.username == app.user.name ? "(You)" }}</div>
-                                    <div class="text-muted">{{ rank.time }}</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div {{ vue_component('Identicon', {
+                                        name: rank.username,
+                                        size: 60
+                                    }) }}></div>
+                                    <div class="text-start">
+                                        <div class="fs-5">{{ rank.username|title }} {{ rank.username == app.user.name ? "(You)" }}</div>
+                                        <div class="text-muted">{{ rank.time }}</div>
+                                    </div>
                                 </div>
-                                <span class="fs-3 badge text-bg-dark rounded-pill">{{ rank.points|format_number }}</span>
+                                <span class="badge fs-6 text-bg-dark rounded-pill">{{ rank.points|format_number }}</span>
                             </div>
                         </div>
                     {% else %}
