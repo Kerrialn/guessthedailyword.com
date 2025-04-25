@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://guessthedailyword.com/</loc>
+        <lastmod>2025-04-25T11:00:00+00:00</lastmod>
+        <priority>1.0</priority>
+        <changefreq>daily</changefreq>
+    </url>
+    <url>
+        <loc>https://guessthedailyword.com/leaderboard</loc>
+        <lastmod>2025-04-25T11:00:00+00:00</lastmod>
+        <changefreq>daily</changefreq>
+    </url>
+</urlset>
